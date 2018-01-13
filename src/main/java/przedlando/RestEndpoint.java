@@ -35,7 +35,7 @@ public class RestEndpoint {
     @Path("recommendations/{user_id}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<String> recommendations(@PathParam("user_id") String userId) throws IOException, TasteException {
-        DataModel datamodel = new FileDataModel(new File("C:/workspace_f/Rest/src/main/resources/dataset.csv"));
+        DataModel datamodel = new FileDataModel(new File(RestEndpoint.class.getResource("../dataset.csv").getPath()));
         UserSimilarity usersimilarity = new PearsonCorrelationSimilarity(datamodel);
         UserNeighborhood userneighborhood = new ThresholdUserNeighborhood(0.1, usersimilarity, datamodel);
         UserBasedRecommender recommender = new GenericUserBasedRecommender(datamodel, userneighborhood, usersimilarity);
