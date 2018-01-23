@@ -61,7 +61,7 @@ public class RestEndpoint {
         return ids;
     }
 
-    @POST
+    @GET
     @Path("recommendations/{user_id}/{product_id}")
     public Response addRecommendation(@PathParam("user_id") String userId, @PathParam("product_id") String productId) {
         try {
