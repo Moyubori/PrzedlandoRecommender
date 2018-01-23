@@ -13,7 +13,6 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-import org.jhades.JHades;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.*;
@@ -35,7 +34,6 @@ public class RestEndpoint {
     private void init() {
         dataMatrix = new File(RestEndpoint.class.getResource("../dataset.csv").getPath());
         System.out.println("Coś!");
-        new JHades().overlappingJarsReport();
     }
 
     @GET
