@@ -75,7 +75,6 @@
           <element id="library" level="project" name="Maven: javax.xml.stream:stax-api:1.0-2" />
           <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
           <element id="library" level="project" name="Maven: javax.servlet:servlet-api:2.5" />
-          <element id="library" level="project" name="Maven: com.sun.jersey:jersey-core:1.9" />
           <element id="library" level="project" name="Maven: org.apache.hadoop:hadoop-mapreduce-client-jobclient:2.4.1" />
           <element id="library" level="project" name="Maven: org.apache.hadoop:hadoop-annotations:2.4.1" />
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.12" />
@@ -91,6 +90,7 @@
           <element id="library" level="project" name="Maven: org.apache.mahout.commons:commons-cli:2.0-mahout" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-math3:3.2" />
           <element id="library" level="project" name="Maven: org.apache.solr:solr-commons-csv:3.5.0" />
+          <element id="library" level="project" name="Maven: org.jhades:jhades:1.0.4" />
         </element>
       </element>
       <element id="directory" name="META-INF">

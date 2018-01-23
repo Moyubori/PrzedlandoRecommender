@@ -36,6 +36,18 @@
             <groupId>org.apache.mahout</groupId>
             <artifactId>mahout-mr</artifactId>
             <version>0.10.0</version>
+            <exclusions>
+                <exclusion>  <!-- declare the exclusion here -->
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jhades</groupId>
+            <artifactId>jhades</artifactId>
+            <version>1.0.4</version>
         </dependency>
     </dependencies>
 
