@@ -55,6 +55,40 @@ public class RestEndpoint {
     public List<String> getRecommendations(@PathParam("user_id") String userId) throws IOException, TasteException {
         DataModel datamodel = new FileDataModel(dataMatrix);
 
+        String hostName = "przedlando.database.windows.net";
+        String dbName = "przedlando";
+        String user = "przedlando";
+        String password = "LamaLamaDuck#";
+        String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s;password=%s;encrypt=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
+        Connection connection = null;
+
+        try {
+            connection = DriverManager.getConnection(url);
+            String schema = connection.getSchema();
+
+
+
+            // Create and execute a SELECT SQL statement.
+            String selectSQL = "SELECT * FROM taste_preferences";
+
+
+
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(selectSQL)) {
+
+
+                while (resultSet.next())
+                {
+                    System.out.println(resultSet.getString(1) + " "
+                            + resultSet.getString(2));
+                }
+                connection.close();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //DataModel dataModel2 = new GenericDataModel();
         UserSimilarity usersimilarity = new TanimotoCoefficientSimilarity(datamodel);
         UserNeighborhood userneighborhood = new ThresholdUserNeighborhood(0.6, usersimilarity, datamodel);
