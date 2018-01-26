@@ -23,6 +23,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.DriverManager;
+import java.util.Random;
 
 @Path("/api")
 public class RestEndpoint {
@@ -54,7 +58,8 @@ public class RestEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<String> getRecommendations(@PathParam("user_id") String userId) throws IOException, TasteException {
         DataModel datamodel = new FileDataModel(dataMatrix);
-
+        List<String> userIds = new ArrayList<String>();
+        List<String> productIds = new ArrayList<String>();
         String hostName = "przedlando.database.windows.net";
         String dbName = "przedlando";
         String user = "przedlando";
@@ -64,9 +69,6 @@ public class RestEndpoint {
 
         try {
             connection = DriverManager.getConnection(url);
-            String schema = connection.getSchema();
-
-
 
             // Create and execute a SELECT SQL statement.
             String selectSQL = "SELECT * FROM taste_preferences";
@@ -79,8 +81,9 @@ public class RestEndpoint {
 
                 while (resultSet.next())
                 {
-                    System.out.println(resultSet.getString(1) + " "
-                            + resultSet.getString(2));
+                    userIds.add(resultSet.getString(1));
+                    productIds.add(resultSet.getString(2));
+
                 }
                 connection.close();
             }
@@ -88,15 +91,42 @@ public class RestEndpoint {
         catch (Exception e) {
             e.printStackTrace();
         }
+        Random generator = new Random();
+        int tempNumber = generator.nextInt(1000000);
+        File tempFile = new File("../dataset" + tempNumber + ".csv");
+        tempFile.createNewFile();
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile, true));
+            for(int i =0; i< userIds.size();i++)
+            {
+                bufferedWriter.write(userIds.get(i) + "," + productIds.get(i));
+                bufferedWriter.newLine();
+            }
 
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         //DataModel dataModel2 = new GenericDataModel();
-        UserSimilarity usersimilarity = new TanimotoCoefficientSimilarity(datamodel);
+        DataModel datamodel2 = new FileDataModel(tempFile);
+        UserSimilarity usersimilarity = new TanimotoCoefficientSimilarity(datamodel2);
         UserNeighborhood userneighborhood = new ThresholdUserNeighborhood(0.6, usersimilarity, datamodel);
         UserBasedRecommender recommender = new GenericBooleanPrefUserBasedRecommender(datamodel, userneighborhood, usersimilarity);
         List<RecommendedItem> recommendations = recommender.recommend(Long.valueOf(userId), 5);
         List<String> ids = new ArrayList<>();
         for (RecommendedItem recommendation : recommendations) {
             ids.add(Long.toString(recommendation.getItemID()));
+        }
+        try {
+            Files.delete(tempFile.toPath());
+        } catch (NoSuchFileException x) {
+            System.err.format("%s: no such" + " file or directory%n", tempFile.getPath());
+        } catch (DirectoryNotEmptyException x) {
+            System.err.format("%s not empty%n", tempFile.getPath());
+        } catch (IOException x) {
+            // File permission problems are caught here.
+            System.err.println(x);
         }
         return ids;
     }
@@ -114,7 +144,7 @@ public class RestEndpoint {
 
         try {
             connection = DriverManager.getConnection(url);
-            String schema = connection.getSchema();
+
 
 
 
